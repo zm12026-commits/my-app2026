@@ -38,18 +38,22 @@ body.compact-mode {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.2rem;
+    padding: 0.1rem;
+    margin-bottom: 0.2rem;
 }
 
-.mini-mascot {
-    width: 40px;
+.micro-mascot {
+    width: 24px;
     height: auto;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 .mini-header h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--primary-color);
+    display: flex;
+    align-items: center;
 }
 
 /* グラフをさらに低く */
