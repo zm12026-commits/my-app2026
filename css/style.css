@@ -123,39 +123,12 @@ input[type="date"] {
 
 textarea {
     width: 100%;
-    padding: 0.5rem 2.5rem 0.5rem 0.5rem;
+    padding: 0.5rem;
     border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 16px;
     resize: none;
     background: #fff9fb;
-}
-
-.voice-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.voice-btn.recording {
-    background: #ef4444;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: translateY(-50%) scale(1); }
-    50% { transform: translateY(-50%) scale(1.2); }
-    100% { transform: translateY(-50%) scale(1); }
 }
 
 .submit-btn-mini {
