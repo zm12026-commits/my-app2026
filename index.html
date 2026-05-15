@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ぷりぷりダイアリー - 毎日をかわいく記録</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Google Fonts -->
@@ -15,14 +15,25 @@
     
     <div class="container">
         <header>
+            <div class="mascot-wrapper">
+                <img src="image copy.png" alt="マスコット" class="mascot-img floating">
+            </div>
             <div class="logo-wrapper">
-                <i class="fas fa-heart floating"></i>
                 <h1>ぷりぷりダイアリー</h1>
-                <i class="fas fa-star floating-delayed"></i>
             </div>
             <p>きょうの あなたを きろくしよう ✨</p>
         </header>
 
+        <!-- 気分グラフセクション -->
+        <section class="stats-section">
+            <h2><i class="fas fa-chart-line"></i> こころの バイオリズム</h2>
+            <div class="canvas-wrapper">
+                <canvas id="mood-chart"></canvas>
+            </div>
+            <p class="stats-hint">さいきん 7かかんの きぶんの なみだよ ✨</p>
+        </section>
+
+        <!-- エディタセクション -->
         <section class="editor-section">
             <form id="diary-form">
                 <div class="form-group">
@@ -34,19 +45,19 @@
                     <label><i class="fas fa-smile"></i> きょうの きぶん</label>
                     <div class="mood-selector">
                         <input type="radio" name="mood" value="happy" id="mood-happy" checked>
-                        <label for="mood-happy" title="最高！"><span>😊</span></label>
+                        <label for="mood-happy"><span>😊</span></label>
 
                         <input type="radio" name="mood" value="good" id="mood-good">
-                        <label for="mood-good" title="いい感じ"><span>🙂</span></label>
+                        <label for="mood-good"><span>🙂</span></label>
 
                         <input type="radio" name="mood" value="normal" id="mood-normal">
-                        <label for="mood-normal" title="ふつう"><span>😐</span></label>
+                        <label for="mood-normal"><span>😐</span></label>
 
                         <input type="radio" name="mood" value="sad" id="mood-sad">
-                        <label for="mood-sad" title="もやもや"><span>😟</span></label>
+                        <label for="mood-sad"><span>😟</span></label>
 
                         <input type="radio" name="mood" value="cry" id="mood-cry">
-                        <label for="mood-cry" title="えーん"><span>😭</span></label>
+                        <label for="mood-cry"><span>😭</span></label>
                     </div>
                 </div>
 
@@ -64,6 +75,19 @@
                 </button>
             </form>
         </section>
+
+        <!-- 占いセクション (保存後に表示) -->
+        <div id="fortune-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>✨ ハピネス・フォーチュン ✨</h3>
+                </div>
+                <div id="fortune-result">
+                    <!-- JSで挿入 -->
+                </div>
+                <button onclick="closeModal()" class="close-btn">ありがとう！💖</button>
+            </div>
+        </div>
 
         <section class="entries-section">
             <div id="entries-container">
