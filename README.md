@@ -2,6 +2,8 @@
 
 日々の出来事を手軽に記録できる、軽量でモダンな日記アプリです。
 
+![Simple Diary スクリーンショット](image.png)
+
 ## 🚀 アプリURL
 [https://zm12026-commits.github.io/my-app2026/](https://zm12026-commits.github.io/my-app2026/)
 
