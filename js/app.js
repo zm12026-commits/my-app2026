@@ -40,15 +40,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const recognition = new SpeechRecognition();
         recognition.lang = 'ja-JP';
         recognition.interimResults = false;
+        recognition.continuous = false; // 一回ずつ区切る
 
-        recognition.onstart = () => voiceBtn.classList.add('recording');
-        recognition.onend = () => voiceBtn.classList.remove('recording');
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            textInput.value += (textInput.value ? ' ' : '') + transcript;
+        let isRecording = false;
+
+        recognition.onstart = () => {
+            isRecording = true;
+            voiceBtn.classList.add('recording');
         };
 
-        voiceBtn.onclick = () => recognition.start();
+        recognition.onend = () => {
+            isRecording = false;
+            voiceBtn.classList.remove('recording');
+        };
+
+        recognition.onerror = () => {
+            isRecording = false;
+            voiceBtn.classList.remove('recording');
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            if (transcript) {
+                // 重複を防ぐため、結果が出たらすぐ止める（念のため）
+                recognition.stop();
+                const currentText = textInput.value.trim();
+                textInput.value = (currentText ? currentText + ' ' : '') + transcript;
+            }
+        };
+
+        voiceBtn.onclick = (e) => {
+            e.preventDefault();
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.error("Speech recognition error:", err);
+                }
+            }
+        };
     } else {
         voiceBtn.style.display = 'none';
     }
