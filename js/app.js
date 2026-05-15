@@ -17,6 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('mood-chart');
     const ctx = canvas.getContext('2d');
 
+    // BGM要素
+    const bgmAudio = document.getElementById('bgm-audio');
+    const bgmToggle = document.getElementById('bgm-toggle');
+    let isPlaying = false;
+
+    // BGM切り替え
+    bgmToggle.addEventListener('click', () => {
+        if (isPlaying) {
+            bgmAudio.pause();
+            bgmToggle.classList.remove('playing');
+            bgmToggle.innerHTML = '<i class="fas fa-music"></i>';
+        } else {
+            bgmAudio.play().catch(e => console.log("Audio play failed:", e));
+            bgmToggle.classList.add('playing');
+            bgmToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+        isPlaying = !isPlaying;
+    });
+
     const moodValues = { happy: 5, good: 4, normal: 3, sad: 2, cry: 1 };
     const moodIcons = { happy: '😊', good: '🙂', normal: '😐', sad: '😟', cry: '😭' };
 
