@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ぷりぷりダイアリー - 毎日をかわいく記録</title>
+    <title>ぷりぷりダイアリー</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="compact-mode">
     <div class="stars-container" id="stars-container"></div>
     
     <!-- BGM Control -->
-    <div class="bgm-controls">
-        <button id="bgm-toggle" class="bgm-btn" aria-label="BGMを再生/停止">
+    <div class="top-controls">
+        <button id="bgm-toggle" class="circle-btn" aria-label="BGM">
             <i class="fas fa-music"></i>
         </button>
         <audio id="bgm-audio" loop>
@@ -23,87 +21,59 @@
         </audio>
     </div>
     
-    <div class="container">
-        <header>
-            <div class="mascot-wrapper">
-                <img src="image copy.png" alt="マスコット" class="mascot-img floating">
-            </div>
-            <div class="logo-wrapper">
-                <h1>ぷりぷりダイアリー</h1>
-            </div>
-            <p>きょうの あなたを きろくしよう ✨</p>
+    <div class="main-screen">
+        <header class="mini-header">
+            <img src="image copy.png" alt="マスコット" class="mini-mascot floating">
+            <h1>ぷりぷりダイアリー</h1>
         </header>
 
-        <!-- 気分グラフセクション -->
-        <section class="stats-section">
-            <h2><i class="fas fa-chart-line"></i> こころの バイオリズム</h2>
+        <!-- グラフ (高さを抑える) -->
+        <section class="mini-stats">
             <div class="canvas-wrapper">
                 <canvas id="mood-chart"></canvas>
             </div>
-            <p class="stats-hint">さいきん 7かかんの きぶんの なみだよ ✨</p>
         </section>
 
-        <!-- エディタセクション -->
-        <section class="editor-section">
+        <!-- エディタ (コンパクト化) -->
+        <section class="mini-editor">
             <form id="diary-form">
-                <div class="form-group">
-                    <label for="date-input"><i class="fas fa-calendar-day"></i> いつ？</label>
+                <div class="row">
                     <input type="date" id="date-input" required>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fas fa-smile"></i> きょうの きぶん</label>
-                    <div class="mood-selector">
-                        <input type="radio" name="mood" value="happy" id="mood-happy" checked>
-                        <label for="mood-happy"><span>😊</span></label>
-
-                        <input type="radio" name="mood" value="good" id="mood-good">
-                        <label for="mood-good"><span>🙂</span></label>
-
-                        <input type="radio" name="mood" value="normal" id="mood-normal">
-                        <label for="mood-normal"><span>😐</span></label>
-
-                        <input type="radio" name="mood" value="sad" id="mood-sad">
-                        <label for="mood-sad"><span>😟</span></label>
-
-                        <input type="radio" name="mood" value="cry" id="mood-cry">
-                        <label for="mood-cry"><span>😭</span></label>
+                    <div class="mini-mood-selector">
+                        <input type="radio" name="mood" value="happy" id="mood-happy" checked><label for="mood-happy">😊</label>
+                        <input type="radio" name="mood" value="good" id="mood-good"><label for="mood-good">🙂</label>
+                        <input type="radio" name="mood" value="normal" id="mood-normal"><label for="mood-normal">😐</label>
+                        <input type="radio" name="mood" value="sad" id="mood-sad"><label for="mood-sad">😟</label>
+                        <input type="radio" name="mood" value="cry" id="mood-cry"><label for="mood-cry">😭</label>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="text-input"><i class="fas fa-magic"></i> なにがあった？</label>
-                    <textarea id="text-input" rows="4" placeholder="きょうも おつかれさま！なにがあったかな？" required></textarea>
-                    <div class="char-count-wrapper">
-                        <span id="char-count">0</span> 文字
-                        <span id="praise-message"></span>
-                    </div>
+                <div class="input-wrapper">
+                    <textarea id="text-input" rows="2" placeholder="きょうは どうだった？" required></textarea>
+                    <button type="button" id="voice-btn" class="voice-btn" title="こえで にゅうりょく">
+                        <i class="fas fa-microphone"></i>
+                    </button>
                 </div>
 
-                <button type="submit" class="submit-btn">
+                <button type="submit" class="submit-btn-mini">
                     <i class="fas fa-cloud"></i> まほうの ほぞん
                 </button>
             </form>
         </section>
 
-        <!-- 占いセクション (保存後に表示) -->
-        <div id="fortune-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>✨ ハピネス・フォーチュン ✨</h3>
-                </div>
-                <div id="fortune-result">
-                    <!-- JSで挿入 -->
-                </div>
-                <button onclick="closeModal()" class="close-btn">ありがとう！💖</button>
-            </div>
-        </div>
-
-        <section class="entries-section">
-            <div id="entries-container">
-                <!-- 日記がここに入ります -->
-            </div>
+        <!-- 履歴エリア (最小限の表示) -->
+        <section class="mini-history">
+            <div id="entries-container"></div>
         </section>
+    </div>
+
+    <!-- 占いモーダル -->
+    <div id="fortune-modal" class="modal">
+        <div class="modal-content">
+            <h3>✨ フォーチュン ✨</h3>
+            <div id="fortune-result"></div>
+            <button onclick="closeModal()" class="close-btn">OK! 💖</button>
+        </div>
     </div>
 
     <script src="js/app.js"></script>
