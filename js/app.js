@@ -1,19 +1,47 @@
 /**
- * Simple Diary - main logic
+ * ぷりぷりダイアリー - JS Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     // 状態管理
-    let entries = JSON.parse(localStorage.getItem('diary-entries')) || [];
+    let entries = JSON.parse(localStorage.getItem('puri-diary-entries')) || [];
 
     // DOM要素
     const diaryForm = document.getElementById('diary-form');
     const dateInput = document.getElementById('date-input');
     const textInput = document.getElementById('text-input');
     const entriesContainer = document.getElementById('entries-container');
+    const charCount = document.getElementById('char-count');
+    const praiseMessage = document.getElementById('praise-message');
+    const starsContainer = document.getElementById('stars-container');
+
+    const moodIcons = {
+        happy: '😊',
+        good: '🙂',
+        normal: '😐',
+        sad: '😟',
+        cry: '😭'
+    };
 
     /**
-     * 今日の日付を初期値としてセット
+     * 背景のキラキラを生成
+     */
+    const createStars = () => {
+        for (let i = 0; i < 15; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 20 + 10;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animation = `floating ${Math.random() * 3 + 2}s ease-in-out infinite ${Math.random() * -5}s`;
+            starsContainer.appendChild(star);
+        }
+    };
+
+    /**
+     * 今日の日付をセット
      */
     const setTodayDate = () => {
         const now = new Date();
@@ -24,14 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
-     * 日記を保存して画面を更新
+     * 文字数カウントと応援メッセージ
+     */
+    textInput.addEventListener('input', () => {
+        const len = textInput.value.length;
+        charCount.textContent = len;
+
+        if (len > 50) {
+            praiseMessage.textContent = 'たくさん書けてえらい！💖';
+        } else if (len > 20) {
+            praiseMessage.textContent = 'いい感じ！✨';
+        } else {
+            praiseMessage.textContent = '';
+        }
+    });
+
+    /**
+     * 保存して描画
      */
     const saveAndRender = () => {
-        // 日付順に並び替え
         entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-        // localStorageに保存
-        localStorage.setItem('diary-entries', JSON.stringify(entries));
-        // 描画
+        localStorage.setItem('puri-diary-entries', JSON.stringify(entries));
         renderEntries();
     };
 
@@ -43,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (entries.length === 0) {
             entriesContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-feather-alt"></i>
-                    <p>まだ日記がありません。<br>今日のできごとを書いてみましょう。</p>
+                <div class="empty-state" style="text-align:center; padding: 3rem; opacity: 0.6;">
+                    <i class="fas fa-sparkles" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; display: block;"></i>
+                    <p>まだ日記がないよ。<br>きょうの まほうを かけてみて！</p>
                 </div>
             `;
             return;
@@ -59,11 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const card = document.createElement('div');
             card.className = 'entry-card';
+            
+            // 気分アイコンの取得（古いデータへの互換性のためデフォルトをセット）
+            const moodIcon = moodIcons[entry.mood] || '😊';
+
             card.innerHTML = `
                 <div class="entry-header">
-                    <div class="entry-date">
-                        <i class="far fa-calendar-check"></i>
-                        <span>${formattedDate}</span>
+                    <div class="entry-date-mood">
+                        <span class="entry-mood-display">${moodIcon}</span>
+                        <span class="entry-date">${formattedDate}</span>
                     </div>
                     <button class="delete-btn" aria-label="削除" data-id="${entry.id}">
                         <i class="fas fa-trash-alt"></i>
@@ -72,29 +117,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="entry-content">${escapeHTML(entry.text)}</div>
             `;
 
-            // 削除ボタンのイベント
             card.querySelector('.delete-btn').addEventListener('click', (e) => {
                 const id = e.currentTarget.dataset.id;
-                deleteEntry(id);
+                if (confirm('この日記をけしちゃう？')) {
+                    entries = entries.filter(item => item.id !== id);
+                    saveAndRender();
+                }
             });
 
             entriesContainer.appendChild(card);
         });
     };
 
-    /**
-     * 日記を削除
-     */
-    const deleteEntry = (id) => {
-        if (confirm('この日記を削除してもよろしいですか？')) {
-            entries = entries.filter(entry => entry.id !== id);
-            saveAndRender();
-        }
-    };
-
-    /**
-     * HTMLエスケープ（XSS対策）
-     */
     const escapeHTML = (str) => {
         const div = document.createElement('div');
         div.textContent = str;
@@ -105,9 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
     diaryForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const mood = document.querySelector('input[name="mood"]:checked').value;
+
         const newEntry = {
             id: Date.now().toString(),
             date: dateInput.value,
+            mood: mood,
             text: textInput.value.trim()
         };
 
@@ -116,11 +153,21 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.push(newEntry);
         saveAndRender();
 
-        // フォームをリセット（日付は残す）
+        // リセット
         textInput.value = '';
+        charCount.textContent = '0';
+        praiseMessage.textContent = '';
+        
+        // 保存時にちょっとした演出（任意）
+        const btn = document.querySelector('.submit-btn');
+        btn.innerHTML = '<i class="fas fa-magic"></i> ほぞんしたよ！';
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-cloud"></i> まほうの ほぞん';
+        }, 2000);
     });
 
     // 初期化
+    createStars();
     setTodayDate();
     renderEntries();
 });

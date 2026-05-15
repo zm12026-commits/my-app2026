@@ -3,37 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Diary - 日々の記録</title>
+    <title>ぷりぷりダイアリー - 毎日をかわいく記録</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- FontAwesome (アイコン用) -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="stars-container" id="stars-container"></div>
+    
     <div class="container">
         <header>
-            <h1><i class="fas fa-book-open"></i> Simple Diary</h1>
-            <p>日々の出来事を大切に記録しましょう</p>
+            <div class="logo-wrapper">
+                <i class="fas fa-heart floating"></i>
+                <h1>ぷりぷりダイアリー</h1>
+                <i class="fas fa-star floating-delayed"></i>
+            </div>
+            <p>きょうの あなたを きろくしよう ✨</p>
         </header>
 
         <section class="editor-section">
             <form id="diary-form">
                 <div class="form-group">
-                    <label for="date-input">日付</label>
+                    <label for="date-input"><i class="fas fa-calendar-day"></i> いつ？</label>
                     <input type="date" id="date-input" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="text-input">内容</label>
-                    <textarea id="text-input" rows="5" placeholder="今日はどんな一日でしたか？" required></textarea>
+                    <label><i class="fas fa-smile"></i> きょうの きぶん</label>
+                    <div class="mood-selector">
+                        <input type="radio" name="mood" value="happy" id="mood-happy" checked>
+                        <label for="mood-happy" title="最高！"><span>😊</span></label>
+
+                        <input type="radio" name="mood" value="good" id="mood-good">
+                        <label for="mood-good" title="いい感じ"><span>🙂</span></label>
+
+                        <input type="radio" name="mood" value="normal" id="mood-normal">
+                        <label for="mood-normal" title="ふつう"><span>😐</span></label>
+
+                        <input type="radio" name="mood" value="sad" id="mood-sad">
+                        <label for="mood-sad" title="もやもや"><span>😟</span></label>
+
+                        <input type="radio" name="mood" value="cry" id="mood-cry">
+                        <label for="mood-cry" title="えーん"><span>😭</span></label>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="text-input"><i class="fas fa-magic"></i> なにがあった？</label>
+                    <textarea id="text-input" rows="4" placeholder="きょうも おつかれさま！なにがあったかな？" required></textarea>
+                    <div class="char-count-wrapper">
+                        <span id="char-count">0</span> 文字
+                        <span id="praise-message"></span>
+                    </div>
+                </div>
+
                 <button type="submit" class="submit-btn">
-                    <i class="fas fa-pen"></i> 記録する
+                    <i class="fas fa-cloud"></i> まほうの ほぞん
                 </button>
             </form>
         </section>
 
         <section class="entries-section">
             <div id="entries-container">
-                <!-- JavaScriptで日記がここに追加されます -->
+                <!-- 日記がここに入ります -->
             </div>
         </section>
     </div>
