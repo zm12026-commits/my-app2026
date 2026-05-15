@@ -3,156 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイダイアリー</title>
-    <!-- Tailwind CSS (デザイン用) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Simple Diary - 日々の記録</title>
+    <link rel="stylesheet" href="css/style.css">
     <!-- FontAwesome (アイコン用) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
-    <!-- メインコンテナ -->
-    <div class="max-w-2xl mx-auto">
-        
-        <!-- ヘッダー -->
-        <header class="mb-8 text-center pt-4">
-            <h1 class="text-3xl font-bold text-indigo-600 tracking-tight">
-                <i class="fas fa-book-open mr-2"></i>マイダイアリー
-            </h1>
-            <p class="text-slate-500 mt-2 text-sm">日々の出来事を記録しよう</p>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-book-open"></i> Simple Diary</h1>
+            <p>日々の出来事を大切に記録しましょう</p>
         </header>
 
-        <!-- 入力フォーム -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-slate-100">
-            <form id="diary-form" class="space-y-4">
-                <div>
-                    <label for="date-input" class="block text-sm font-medium text-slate-700 mb-1">日付</label>
-                    <input type="date" id="date-input" required 
-                        class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+        <section class="editor-section">
+            <form id="diary-form">
+                <div class="form-group">
+                    <label for="date-input">日付</label>
+                    <input type="date" id="date-input" required>
                 </div>
-                <div>
-                    <label for="text-input" class="block text-sm font-medium text-slate-700 mb-1">内容</label>
-                    <textarea id="text-input" rows="4" required placeholder="今日はどんな一日でしたか？" 
-                        class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition resize-none"></textarea>
+                <div class="form-group">
+                    <label for="text-input">内容</label>
+                    <textarea id="text-input" rows="5" placeholder="今日はどんな一日でしたか？" required></textarea>
                 </div>
-                <button type="submit" 
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex justify-center items-center shadow-sm">
-                    <i class="fas fa-pen mr-2"></i>記録する
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-pen"></i> 記録する
                 </button>
             </form>
-        </div>
+        </section>
 
-        <!-- 日記一覧表示エリア -->
-        <div id="entries-container" class="space-y-4 pb-12">
-            <!-- ここにJavaScriptで日記が追加されます -->
-        </div>
-
+        <section class="entries-section">
+            <div id="entries-container">
+                <!-- JavaScriptで日記がここに追加されます -->
+            </div>
+        </section>
     </div>
 
-    <script>
-        // 日記のデータを保存する配列（※現在は一時保存です）
-        let entries = [];
-
-        // HTML要素の取得
-        const form = document.getElementById('diary-form');
-        const dateInput = document.getElementById('date-input');
-        const textInput = document.getElementById('text-input');
-        const entriesContainer = document.getElementById('entries-container');
-
-        // 今日の日付をデフォルトでセット
-        const today = new Date();
-        // タイムゾーンのズレを防ぐためローカルの年月日でフォーマット
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        dateInput.value = `${yyyy}-${mm}-${dd}`;
-
-        // フォーム送信時の処理
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // 画面の再読み込みを防ぐ
-            
-            const date = dateInput.value;
-            const text = textInput.value;
-
-            if (!date || !text.trim()) return;
-
-            // 新しい日記オブジェクトを作成
-            const newEntry = {
-                id: Date.now().toString(), // 一意のIDとして現在時刻を使用
-                date: date,
-                text: text.trim()
-            };
-
-            // 配列に追加して日付順（新しい順）に並び替え
-            entries.push(newEntry);
-            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            // 入力欄を空にして画面を更新
-            textInput.value = '';
-            renderEntries();
-        });
-
-        // 日記を削除する関数
-        function deleteEntry(id) {
-            entries = entries.filter(entry => entry.id !== id);
-            renderEntries();
-        }
-
-        // 画面に日記を描画する関数
-        function renderEntries() {
-            entriesContainer.innerHTML = '';
-
-            // 日記が1つもない場合の表示
-            if (entries.length === 0) {
-                entriesContainer.innerHTML = `
-                    <div class="text-center py-12 text-slate-400">
-                        <i class="fas fa-inbox text-4xl mb-3"></i>
-                        <p>まだ日記がありません。<br>最初の思い出を記録しましょう！</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // 日記をループしてHTMLを作成
-            entries.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.className = 'bg-white rounded-2xl shadow-sm p-5 border border-slate-100 transition hover:shadow-md';
-
-                // 日付を日本語のきれいなフォーマットに変換
-                const dateObj = new Date(entry.date);
-                const formattedDate = dateObj.toLocaleDateString('ja-JP', { 
-                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' 
-                });
-
-                entryDiv.innerHTML = `
-                    <div class="flex justify-between items-start mb-3 border-b border-slate-50 pb-2">
-                        <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                            <i class="far fa-calendar-alt text-indigo-500 mr-2"></i>${formattedDate}
-                        </h3>
-                        <button onclick="deleteEntry('${entry.id}')" class="text-slate-300 hover:text-red-500 transition p-1" title="削除">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                    <p class="text-slate-600 whitespace-pre-wrap break-words leading-relaxed">${escapeHTML(entry.text)}</p>
-                `;
-                entriesContainer.appendChild(entryDiv);
-            });
-        }
-
-        // セキュリティ対策: HTMLタグを無効化する関数
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag])
-            );
-        }
-
-        // 初期表示の実行
-        renderEntries();
-    </script>
+    <script src="js/app.js"></script>
 </body>
 </html>
